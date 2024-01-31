@@ -16,5 +16,5 @@ jobs:
       alphas: '["qwerty"]'
       nav: '["vi"]'
       custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH"]'
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\n#define MIRYOKU_KLUDGE_SUSPEND"]'
-      branches: '["zmkfirmware/zmk/main caksoylar/zmk/feat/mouse-keys-3.2 manna-harbour/zmk/suspend-test"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR"]'
+      branches: '["zmkfirmware/zmk/main caksoylar/zmk/feat/mouse-keys-3.2"]'
