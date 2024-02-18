@@ -16,5 +16,5 @@ jobs:
       alphas: '["qwerty"]'
       nav: '["vi"]'
       custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH"]'
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y"]'
-      branches: '["zmkfirmware/zmk/main urob/zmk/tree/mouse-3.2"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y"]'
+      branches: '["zmkfirmware/zmk/main caksoylar/zmk/feat/mouse-keys-3.2"]'
