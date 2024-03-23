@@ -15,6 +15,6 @@ jobs:
       shield: '["corne_left nice_view_adapter nice_view","corne_right nice_view_adapter nice_view"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
-      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\n#define MIRYOKU_KLUDGE_SUSPEND\#define BOARD_NICE_NANO_V2"]'
+      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\n#define MIRYOKU_KLUDGE_SUSPEND\n#define BOARD_NICE_NANO_V2"]'
       kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y"]'
       branches: '["zmkfirmware/zmk/main shmatt/zmk/feat/mouse-keys-3.2"]'
