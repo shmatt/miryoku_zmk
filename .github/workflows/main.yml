@@ -354,4 +354,5 @@ jobs:
         with:
           name: ${{ steps.main.outputs.artifact_generic_name }}
           path: ${{ steps.main.outputs.artifact_dir }}
+          overwrite: true
 
