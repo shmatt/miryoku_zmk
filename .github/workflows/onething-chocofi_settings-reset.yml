@@ -1,7 +1,7 @@
 # Copyright 2022 Manna Harbour
 # https://github.com/manna-harbour/miryoku
 
-name: 'OneThing Chocofi Keyboard'
+name: 'OneThing Chocofi Keyboard (settings reset)'
 on:
   push:
   pull_request:
