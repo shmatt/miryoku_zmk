@@ -19,6 +19,14 @@
       key-positions = <37 38>;
       bindings = <&joycon2_debug_print 0>;
     };
+
+    // Stage 1 sub-stage 2: third BLE central role survival test.
+    // Right-half innermost thumb keys, mirroring the debug-print combo above.
+    combo_joycon2_central_test {
+      timeout-ms = <50>;
+      key-positions = <39 40>;
+      bindings = <&joycon2_central_test>;
+    };
   };
 };
 #endif
