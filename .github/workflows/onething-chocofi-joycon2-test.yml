@@ -32,7 +32,7 @@ jobs:
       # firmware can print the actually-negotiated LL payload size; enabling
       # it flips BT_AUTO_DATA_LEN_UPDATE's default to n, so force that back
       # on to keep auto-negotiation.
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_HID_IO=y\nCONFIG_ZMK_HID_IO_JOYSTICK=y"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_HID_IO=y\nCONFIG_ZMK_HID_IO_JOYSTICK=y\nCONFIG_ZMK_HID_IO_LEGACY_ENDPOINT_ACCESSOR=y"]'
       branches: '["shmatt/zmk/feat/mouse-keys-3.2"]'
       # zmk-hid-io provides the second HID-over-GATT service that exposes a
       # Generic Desktop Joystick to the host -- ZMK's own report descriptor is
@@ -41,4 +41,4 @@ jobs:
       # NOTE: each element of this JSON array is a separate build VARIANT, not
       # an extra module. main.yml does `for module in $modules`, so several
       # modules for ONE build go in a single space-separated string.
-      modules: '["shmatt/zmk-joycon2/main badjeff/zmk-hid-io/main"]'
+      modules: '["shmatt/zmk-joycon2/main shmatt/zmk-hid-io/compat/legacy-endpoint-accessor"]'
