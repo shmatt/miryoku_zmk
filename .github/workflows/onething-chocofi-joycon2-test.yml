@@ -32,8 +32,10 @@ jobs:
       # firmware can print the actually-negotiated LL payload size; enabling
       # it flips BT_AUTO_DATA_LEN_UPDATE's default to n, so force that back
       # on to keep auto-negotiation.
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y"]'
-      branches: '["shmatt/zmk/feat/mouse-keys-3.2"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_GAMEPAD=y\nCONFIG_ZMK_JOYCON2_LEGACY_ENDPOINT_API=y"]'
+      # feat/gamepad-hid-3.2 is feat/mouse-keys-3.2 (what production uses,
+      # so mouse keys are unchanged) plus the optional gamepad HID report.
+      branches: '["shmatt/zmk/feat/gamepad-hid-3.2"]'
       # zmk-hid-io REMOVED: registering a second HID-over-GATT service broke
       # BLE HID on Android outright -- the keyboard would no longer pair at
       # all (USB still worked). Two HIDS primary services in one GATT
