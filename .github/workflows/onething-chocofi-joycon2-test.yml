@@ -1,8 +1,13 @@
-# Joy-Con 2 project — Stage 1 POC test build.
-# Manually triggered only (workflow_dispatch), does not run on push/PR, and
-# does not affect the production "OneThing Chocofi Keyboard" build: it only
-# differs by adding MIRYOKU_KLUDGE_JOYCON2_DEBUG (inert everywhere else) and
-# the zmk-joycon2 module.
+# Joy-Con 2 project test build.
+# Manually triggered only (workflow_dispatch), and kept separate from the
+# production "OneThing Chocofi Keyboard" workflow so that build always stays
+# flashable as a known-good fallback.
+#
+# Unlike production, this builds against current upstream ZMK rather than the
+# old shmatt/zmk feat/mouse-keys-3.2 fork: upstream miryoku moved mouse support
+# to CONFIG_ZMK_POINTING (its commit "support CONFIG_ZMK_POINTING"), so no
+# downstream branch is needed for mouse keys any more. The only remaining ZMK
+# patch is feat/gamepad-hid, which adds an optional gamepad HID report.
 name: 'OneThing Chocofi Joy-Con2 POC Test'
 on:
   workflow_dispatch:
@@ -15,32 +20,39 @@ jobs:
       shield: '["corne_left nice_view_adapter nice_view","corne_right nice_view_adapter nice_view"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
-      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\n#define MIRYOKU_KLUDGE_JOYCON2_DEBUG"]'
-      # CONFIG_BT_CTLR_DATA_LENGTH_MAX: Zephyr's default is BT_BUF_ACL_RX_SIZE
-      # only when that is <251, else 27 -- so setting BUF_ACL_RX_SIZE=254 alone
-      # silently left the link layer at 27-byte PDUs (no Data Length Extension).
-      # Every host known to receive Joy-Con 2 input (macOS/Windows) runs DLE.
-      # NO DOUBLE QUOTES ALLOWED in this kconfig value: main.yml interpolates
-      # it raw into a shell [ ] test, and embedded quotes (as in
+      # MIRYOKU_KLUDGE_MOUSEKEYSPR is gone -- upstream removed it along with the
+      # fork it depended on; mouse keys now come from CONFIG_ZMK_POINTING below
+      # and are otherwise identical (same &mmv/&msc bindings, same speed and
+      # acceleration). ZMK_POINTING_DEFAULT_SCRL_VAL preserves the slower scroll
+      # from "Change scroll speed to 20"; upstream defaults to 100.
+      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define ZMK_POINTING_DEFAULT_SCRL_VAL 20\n#define MIRYOKU_KLUDGE_JOYCON2_DEBUG"]'
+      # NO DOUBLE QUOTES ALLOWED in this kconfig value: main.yml interpolates it
+      # raw into a shell [ ] test, and embedded quotes (as in
       # CONFIG_ZMK_KEYBOARD_NAME="...") break the test with "unexpected
       # operator", silently skipping the ENTIRE kconfig block -- confirmed in
-      # run 32015882153's logs. That means no kconfig line here (or in the
-      # production workflow, which has the same quoted name) has ever been
-      # applied to any build. Keyboard-name line dropped to unbreak the rest.
+      # run 32015882153's logs. That is what left the ATT MTU at its 65-byte
+      # default, one byte too small for a 63-byte Joy-Con input report, so no
+      # input ever arrived. The production workflow still has the quoted name
+      # and so has never had any of its kconfig applied either.
       #
-      # BT_USER_DATA_LEN_UPDATE exposes the le_data_len_updated callback so
-      # firmware can print the actually-negotiated LL payload size; enabling
-      # it flips BT_AUTO_DATA_LEN_UPDATE's default to n, so force that back
-      # on to keep auto-negotiation.
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y"]'
-      branches: '["shmatt/zmk/feat/mouse-keys-3.2"]'
-      # zmk-hid-io REMOVED: registering a second HID-over-GATT service broke
-      # BLE HID on Android outright -- the keyboard would no longer pair at
-      # all (USB still worked). Two HIDS primary services in one GATT
-      # database is evidently more than Android's HID host will accept, and
-      # hid-io's encrypted characteristics force a security upgrade on top.
-      # The gamepad report has to live in ZMK's own descriptor instead.
-      # NOTE: each element of this JSON array is a separate build VARIANT, not
-      # an extra module. main.yml does `for module in $modules`, so several
-      # modules for ONE build go in a single space-separated string.
+      # BT_CTLR_DATA_LENGTH_MAX defaults to BT_BUF_ACL_RX_SIZE only when that is
+      # below 251, otherwise 27 -- so raising BUF_ACL_RX_SIZE alone leaves the
+      # link layer without Data Length Extension.
+      #
+      # BT_USER_DATA_LEN_UPDATE exposes the le_data_len_updated callback so the
+      # firmware can report the negotiated payload size; enabling it flips
+      # BT_AUTO_DATA_LEN_UPDATE's default to n, so force that back on.
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_ZMK_POINTING=y\nCONFIG_ZMK_GAMEPAD=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y"]'
+      # feat/gamepad-hid is upstream main plus the gamepad report, so it serves
+      # as both the ZMK base and the only patch.
+      branches: '["shmatt/zmk/feat/gamepad-hid"]'
+      # zmk-hid-io REMOVED: registering a second HID-over-GATT service broke BLE
+      # HID on Android outright -- the keyboard stopped pairing at all, though
+      # USB still worked. Two HIDS primary services in one GATT database is more
+      # than Android's HID host accepts. The gamepad report lives in ZMK's own
+      # HID interface instead (CONFIG_ZMK_GAMEPAD, report ID 4).
+      #
+      # NOTE: each element of this array is a separate build VARIANT, not an
+      # extra module. main.yml does `for module in $modules`, so several modules
+      # for one build go in a single space-separated string.
       modules: '["shmatt/zmk-joycon2/main"]'
