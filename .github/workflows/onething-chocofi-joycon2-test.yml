@@ -16,7 +16,11 @@ jobs:
     uses: ./.github/workflows/main.yml
     secrets: inherit
     with:
-      board: '["nice_nano_v2"]'
+      # Upstream ZMK moved to Hardware Model v2, which renamed this board: it
+      # is now `nice_nano` with revisions 1.0.0/2.0.0 and default_revision
+      # 2.0.0, so plain `nice_nano` selects nice!nano v2 -- the old
+      # `nice_nano_v2` name no longer exists and fails with "Board not found".
+      board: '["nice_nano"]'
       shield: '["corne_left nice_view_adapter nice_view","corne_right nice_view_adapter nice_view"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
