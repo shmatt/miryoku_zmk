@@ -4,3 +4,21 @@
 #include "../miryoku/custom_config.h"
 #include "../miryoku/mapping/42/corne.h"
 #include "../miryoku/miryoku.dtsi"
+
+#if defined (MIRYOKU_KLUDGE_JOYCON2_DEBUG)
+// Joy-Con 2 project, Stage 1 sub-stage 1: HID debug-print helper test.
+// Inert unless MIRYOKU_KLUDGE_JOYCON2_DEBUG is defined (only the dedicated
+// test workflow sets it) — the production build is unaffected.
+#include <joycon2.dtsi>
+
+/ {
+  combos {
+    compatible = "zmk,combos";
+    combo_joycon2_debug {
+      timeout-ms = <50>;
+      key-positions = <37 38>;
+      bindings = <&joycon2_debug_print 0>;
+    };
+  };
+};
+#endif

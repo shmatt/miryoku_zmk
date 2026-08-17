@@ -1,0 +1,21 @@
+# Joy-Con 2 project — Stage 1 POC test build.
+# Manually triggered only (workflow_dispatch), does not run on push/PR, and
+# does not affect the production "OneThing Chocofi Keyboard" build: it only
+# differs by adding MIRYOKU_KLUDGE_JOYCON2_DEBUG (inert everywhere else) and
+# the zmk-joycon2 module.
+name: 'OneThing Chocofi Joy-Con2 POC Test'
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    uses: ./.github/workflows/main.yml
+    secrets: inherit
+    with:
+      board: '["nice_nano_v2"]'
+      shield: '["corne_left nice_view_adapter nice_view","corne_right nice_view_adapter nice_view"]'
+      alphas: '["qwerty"]'
+      nav: '["vi"]'
+      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\n#define MIRYOKU_KLUDGE_JOYCON2_DEBUG"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y"]'
+      branches: '["shmatt/zmk/feat/mouse-keys-3.2"]'
+      modules: '["shmatt/zmk-joycon2/main"]'
