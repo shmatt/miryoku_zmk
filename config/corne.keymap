@@ -27,6 +27,15 @@
       key-positions = <39 40>;
       bindings = <&joycon2_central_test>;
     };
+
+    // Stage 1 sub-stage 4: connect to a real Joy-Con 2.
+    // Left-half OUTER thumb pair (distinct from the debug-print combo's
+    // inner pair at 37 38).
+    combo_joycon2_connect {
+      timeout-ms = <50>;
+      key-positions = <36 37>;
+      bindings = <&joycon2_connect>;
+    };
   };
 };
 #endif
