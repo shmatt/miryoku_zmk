@@ -20,6 +20,10 @@ jobs:
       # only when that is <251, else 27 -- so setting BUF_ACL_RX_SIZE=254 alone
       # silently left the link layer at 27-byte PDUs (no Data Length Extension).
       # Every host known to receive Joy-Con 2 input (macOS/Windows) runs DLE.
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251"]'
+      # BT_USER_DATA_LEN_UPDATE exposes the le_data_len_updated callback so
+      # firmware can print the actually-negotiated LL payload size; enabling
+      # it flips BT_AUTO_DATA_LEN_UPDATE's default to n, so force that back
+      # on to keep auto-negotiation.
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y"]'
       branches: '["shmatt/zmk/feat/mouse-keys-3.2"]'
       modules: '["shmatt/zmk-joycon2/main"]'
