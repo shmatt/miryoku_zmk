@@ -1,7 +1,7 @@
 # Joy-Con 2 project — Stage 1 POC test build.
 # Manually triggered only (workflow_dispatch), does not run on push/PR, and
 # does not affect the production "OneThing Chocofi Keyboard" build: it only
-# differs by adding MIRYOKU_KLUDGE_JOYCON2_DEBUG (inert everywhere else) and
+# differs by adding MIRYOKU_KLUDGE_JOYCON2 (inert everywhere else) and
 # the zmk-joycon2 module.
 name: 'OneThing Chocofi Joy-Con2 POC Test'
 on:
@@ -19,7 +19,7 @@ jobs:
       shield: '["corne_left nice_view_adapter nice_view","corne_right nice_view_adapter nice_view"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
-      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define ZMK_POINTING_DEFAULT_MOVE_VAL 2200\n#define ZMK_POINTING_DEFAULT_SCRL_VAL 20\n#define MIRYOKU_KLUDGE_JOYCON2_DEBUG"]'
+      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define ZMK_POINTING_DEFAULT_MOVE_VAL 2200\n#define ZMK_POINTING_DEFAULT_SCRL_VAL 20\n#define MIRYOKU_KLUDGE_JOYCON2"]'
       # CONFIG_BT_CTLR_DATA_LENGTH_MAX: Zephyr's default is BT_BUF_ACL_RX_SIZE
       # only when that is <251, else 27 -- so setting BUF_ACL_RX_SIZE=254 alone
       # silently left the link layer at 27-byte PDUs (no Data Length Extension).

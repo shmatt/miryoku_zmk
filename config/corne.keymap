@@ -5,36 +5,29 @@
 #include "../miryoku/mapping/42/corne.h"
 #include "../miryoku/miryoku.dtsi"
 
-#if defined (MIRYOKU_KLUDGE_JOYCON2_DEBUG)
-// Joy-Con 2 project, Stage 1 sub-stage 1: HID debug-print helper test.
-// Inert unless MIRYOKU_KLUDGE_JOYCON2_DEBUG is defined (only the dedicated
-// test workflow sets it) — the production build is unaffected.
+#if defined (MIRYOKU_KLUDGE_JOYCON2)
+// Joy-Con 2 controller support (github.com/shmatt/zmk-joycon2). Inert unless
+// MIRYOKU_KLUDGE_JOYCON2 is defined, so builds without it are unaffected.
 #include <joycon2.dtsi>
 
 / {
   combos {
     compatible = "zmk,combos";
-    combo_joycon2_debug {
-      timeout-ms = <50>;
-      key-positions = <37 38>;
-      bindings = <&joycon2_debug_print 0>;
-    };
 
-    // Stage 1 sub-stage 2: third BLE central role survival test.
-    // Right-half innermost thumb keys, mirroring the debug-print combo above.
-    combo_joycon2_central_test {
-      timeout-ms = <50>;
-      key-positions = <39 40>;
-      bindings = <&joycon2_central_test>;
-    };
-
-    // Stage 1 sub-stage 4: connect to a real Joy-Con 2.
-    // Left-half OUTER thumb pair (distinct from the debug-print combo's
-    // inner pair at 37 38).
+    // Left-half OUTER thumb pair: start a scan, then hold SYNC on a
+    // controller to connect it. Press again to add the second half.
     combo_joycon2_connect {
       timeout-ms = <50>;
       key-positions = <36 37>;
       bindings = <&joycon2_connect>;
+    };
+
+    // Left-half INNER thumb pair: toggle the module's debug output, which
+    // types through the keyboard's own HID connection and is off by default.
+    combo_joycon2_log {
+      timeout-ms = <50>;
+      key-positions = <37 38>;
+      bindings = <&joycon2_debug_print 0>;
     };
   };
 };
