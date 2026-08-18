@@ -76,6 +76,16 @@ jobs:
           path: 'miryoku_zmk'
       - name: main
         id: main
+        # custom_config and kconfig are free text and may contain double quotes
+        # (CONFIG_ZMK_KEYBOARD_NAME="..." for one). Interpolated straight into
+        # the script below they were read as shell syntax, which broke the
+        # enclosing [ ] test with "unexpected operator" and silently skipped
+        # the whole block -- so every kconfig line was discarded, with no error
+        # and a successful build. Passing them through the environment keeps
+        # them as data.
+        env:
+          MIRYOKU_IN_CUSTOM_CONFIG: ${{ matrix.custom_config }}
+          MIRYOKU_IN_KCONFIG: ${{ matrix.kconfig }}
         run: |
           test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' && set -x
           
@@ -112,10 +122,10 @@ jobs:
 
           hash_length=8
 
-          if [ -n "${{ matrix.custom_config }}" -a "${{ matrix.custom_config }}" != 'default' ]
+          if [ -n "$MIRYOKU_IN_CUSTOM_CONFIG" -a "$MIRYOKU_IN_CUSTOM_CONFIG" != 'default' ]
           then
-            echo "${{ matrix.custom_config }}" >> "$configfile"
-            run_name="$run_name config_"`echo "${{ matrix.custom_config }}" | md5sum | head -c "$hash_length"`
+            echo "$MIRYOKU_IN_CUSTOM_CONFIG" >> "$configfile"
+            run_name="$run_name config_"`echo "$MIRYOKU_IN_CUSTOM_CONFIG" | md5sum | head -c "$hash_length"`
           fi
 
           for option in "alphas_${{ matrix.alphas }}" "extra_${{ matrix.extra }}" "tap_${{ matrix.tap }}" "nav_${{ matrix.nav }}" "clipboard_${{ matrix.clipboard }}" "layers_${{ matrix.layers }}" "mapping_${{ matrix.mapping }}"
@@ -136,12 +146,12 @@ jobs:
 
           test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' && cp "$configfile" "$artifact_dir"
           
-          if [ -n "${{ matrix.kconfig }}" -a "${{ matrix.kconfig }}" != 'default' ]
+          if [ -n "$MIRYOKU_IN_KCONFIG" -a "$MIRYOKU_IN_KCONFIG" != 'default' ]
           then
             kconfig_file="${GITHUB_WORKSPACE}/miryoku_zmk/config/$keyboard_split.conf"
-            echo "${{ matrix.kconfig }}" >> "$kconfig_file"
+            echo "$MIRYOKU_IN_KCONFIG" >> "$kconfig_file"
             test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' && cp "$kconfig_file" "$artifact_dir"
-            run_name="$run_name kconfig_"`echo "${{ matrix.kconfig }}" | md5sum | head -c "$hash_length"`
+            run_name="$run_name kconfig_"`echo "$MIRYOKU_IN_KCONFIG" | md5sum | head -c "$hash_length"`
           fi
 
           if [ -n "${{ matrix.branches }}" -a "${{ matrix.branches }}" != 'default' ]
@@ -172,8 +182,8 @@ jobs:
           clipboard: '${{ matrix.clipboard }}'
           layers: '${{ matrix.layers }}'
           mapping: '${{ matrix.mapping }}'
-          custom_config: '${{ matrix.custom_config }}'
-          kconfig: '${{ matrix.kconfig }}'
+          custom_config: '$MIRYOKU_IN_CUSTOM_CONFIG'
+          kconfig: '$MIRYOKU_IN_KCONFIG'
           branches: '${{ matrix.branches }}'  
           modules: '${{ matrix.modules }}'
           " > "$matrix_file"

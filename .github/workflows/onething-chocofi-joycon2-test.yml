@@ -20,19 +20,18 @@ jobs:
       # only when that is <251, else 27 -- so setting BUF_ACL_RX_SIZE=254 alone
       # silently left the link layer at 27-byte PDUs (no Data Length Extension).
       # Every host known to receive Joy-Con 2 input (macOS/Windows) runs DLE.
-      # NO DOUBLE QUOTES ALLOWED in this kconfig value: main.yml interpolates
-      # it raw into a shell [ ] test, and embedded quotes (as in
-      # CONFIG_ZMK_KEYBOARD_NAME="...") break the test with "unexpected
-      # operator", silently skipping the ENTIRE kconfig block -- confirmed in
-      # run 32015882153's logs. That means no kconfig line here (or in the
-      # production workflow, which has the same quoted name) has ever been
-      # applied to any build. Keyboard-name line dropped to unbreak the rest.
+      # Double quotes are safe here again: main.yml now passes this value
+      # through the environment instead of pasting it into the shell. Before
+      # that fix the quoted keyboard name broke the enclosing [ ] test and
+      # silently discarded this whole block -- which is what left the ATT MTU
+      # at its 65-byte default, one byte too small for a 63-byte Joy-Con input
+      # report, so no input ever arrived.
       #
       # BT_USER_DATA_LEN_UPDATE exposes the le_data_len_updated callback so
       # firmware can print the actually-negotiated LL payload size; enabling
       # it flips BT_AUTO_DATA_LEN_UPDATE's default to n, so force that back
       # on to keep auto-negotiation.
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_MOUSE=y\nCONFIG_ZMK_GAMEPAD=y\nCONFIG_ZMK_JOYCON2_LEGACY_ENDPOINT_API=y"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_MOUSE=y\nCONFIG_ZMK_GAMEPAD=y\nCONFIG_ZMK_JOYCON2_LEGACY_ENDPOINT_API=y"]'
       # feat/gamepad-hid-3.2 is feat/mouse-keys-3.2 (what production uses,
       # so mouse keys are unchanged) plus the optional gamepad HID report.
       branches: '["shmatt/zmk/feat/gamepad-hid-3.2"]'
