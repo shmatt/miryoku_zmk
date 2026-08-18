@@ -1,6 +1,11 @@
 # Copyright 2022 Manna Harbour
 # https://github.com/manna-harbour/miryoku
 
+# miryoku.dtsi now includes behaviors/mouse_keys.dtsi and pointing.h
+# unconditionally, so even a settings-wipe build needs a ZMK tree with
+# pointing support -- hence the same branch and CONFIG_ZMK_POINTING as the
+# daily driver. The Joy-Con module is deliberately left out: this build exists
+# only to clear stored settings.
 name: 'OneThing Chocofi Keyboard (settings reset)'
 on:
   push:
@@ -11,10 +16,10 @@ jobs:
     uses: ./.github/workflows/main.yml
     secrets: inherit
     with:
-      board: '["nice_nano_v2"]'
+      board: '["nice_nano/nrf52840/zmk"]'
       shield: '["corne_left nice_view_adapter nice_view settings_reset","corne_right nice_view_adapter nice_view settings_reset"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
-      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR"]'
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y"]'
-      branches: '["shmatt/zmk/feat/mouse-keys-3.2"]'
+      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_ZMK_POINTING=y"]'
+      branches: '["shmatt/zmk/feat/gamepad-hid"]'

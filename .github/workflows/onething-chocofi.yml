@@ -1,6 +1,25 @@
 # Copyright 2022 Manna Harbour
 # https://github.com/manna-harbour/miryoku
 
+# The daily driver. This is the build that gets flashed, so it carries the
+# Joy-Con 2 support rather than keeping it in a side workflow.
+#
+# Load-bearing config, do not trim:
+#
+# - The ZMK branch is shmatt/zmk/feat/gamepad-hid, which adds the gamepad HID
+#   report. ZMK's report descriptor is a static const array in its own
+#   headers, so a module cannot add a report and the patched tree is required.
+# - The MTU and data-length settings are what make the controllers stream at
+#   all: their input report is 63 bytes, so ATT needs an MTU of at least 66.
+#   At the default 65 the controllers connect, subscribe and then send
+#   nothing, which looks exactly like a decode bug.
+# - Quoting: values here are passed through main.yml via env, so the keyboard
+#   name may contain spaces. Historically a quoted value silently discarded
+#   this entire block, which cost the keyboard name, the TX power and the MTU.
+#
+# After flashing a build whose HID config differs from the last one, forget
+# the keyboard on the host and re-pair. Android caches the report descriptor
+# per bond and parses new reports with the old layout otherwise.
 name: 'OneThing Chocofi Keyboard'
 on:
   push:
@@ -11,10 +30,11 @@ jobs:
     uses: ./.github/workflows/main.yml
     secrets: inherit
     with:
-      board: '["nice_nano_v2"]'
+      board: '["nice_nano/nrf52840/zmk"]'
       shield: '["corne_left nice_view_adapter nice_view","corne_right nice_view_adapter nice_view"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
-      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR"]'
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y"]'
-      branches: '["shmatt/zmk/feat/mouse-keys-3.2"]'
+      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define ZMK_POINTING_DEFAULT_MOVE_VAL 2200\n#define ZMK_POINTING_DEFAULT_SCRL_VAL 20\n#define MIRYOKU_KLUDGE_JOYCON2"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_POINTING=y\nCONFIG_ZMK_GAMEPAD=y"]'
+      branches: '["shmatt/zmk/feat/gamepad-hid"]'
+      modules: '["shmatt/zmk-joycon2/main"]'
