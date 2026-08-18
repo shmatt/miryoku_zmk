@@ -11,11 +11,15 @@ jobs:
     uses: ./.github/workflows/main.yml
     secrets: inherit
     with:
-      board: '["nice_nano_v2"]'
+      # Fully qualified on purpose. Upstream ZMK uses Hardware Model v2, where
+      # bare `nice_nano` resolves to nice_nano/nrf52840 WITHOUT the zmk variant,
+      # so nice_view_adapter's boards/nice_nano_nrf52840_zmk.overlay never
+      # matches and nice_view.overlay fails on an undefined nice_view_spi.
+      board: '["nice_nano/nrf52840/zmk"]'
       shield: '["corne_left nice_view_adapter nice_view","corne_right nice_view_adapter nice_view"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
-      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define ZMK_MOUSE_DEFAULT_MOVE_VAL 2200\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\n#define MIRYOKU_KLUDGE_JOYCON2_DEBUG"]'
+      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define ZMK_POINTING_DEFAULT_MOVE_VAL 2200\n#define ZMK_POINTING_DEFAULT_SCRL_VAL 20\n#define MIRYOKU_KLUDGE_JOYCON2_DEBUG"]'
       # CONFIG_BT_CTLR_DATA_LENGTH_MAX: Zephyr's default is BT_BUF_ACL_RX_SIZE
       # only when that is <251, else 27 -- so setting BUF_ACL_RX_SIZE=254 alone
       # silently left the link layer at 27-byte PDUs (no Data Length Extension).
@@ -31,10 +35,11 @@ jobs:
       # firmware can print the actually-negotiated LL payload size; enabling
       # it flips BT_AUTO_DATA_LEN_UPDATE's default to n, so force that back
       # on to keep auto-negotiation.
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_MOUSE=y\nCONFIG_ZMK_GAMEPAD=y\nCONFIG_ZMK_JOYCON2_LEGACY_ENDPOINT_API=y"]'
-      # feat/gamepad-hid-3.2 is feat/mouse-keys-3.2 (what production uses,
-      # so mouse keys are unchanged) plus the optional gamepad HID report.
-      branches: '["shmatt/zmk/feat/gamepad-hid-3.2"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_POINTING=y\nCONFIG_ZMK_GAMEPAD=y"]'
+      # Upstream ZMK plus the optional gamepad HID report. Mouse keys no longer
+      # need a downstream branch: upstream miryoku moved them to
+      # CONFIG_ZMK_POINTING.
+      branches: '["shmatt/zmk/feat/gamepad-hid"]'
       # zmk-hid-io REMOVED: registering a second HID-over-GATT service broke
       # BLE HID on Android outright -- the keyboard would no longer pair at
       # all (USB still worked). Two HIDS primary services in one GATT

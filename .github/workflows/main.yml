@@ -165,7 +165,9 @@ jobs:
             modules="${{ matrix.modules }}"
           fi
 
-          run_name=`echo $run_name | tr ' ' '-'`
+          # Hardware Model v2 board targets contain slashes
+          # (nice_nano/nrf52840/zmk); those are not legal in an artifact name.
+          run_name=`echo $run_name | tr ' /' '--'`
           echo "run_name=$run_name" >> $GITHUB_OUTPUT
 
           echo "::endgroup::"
