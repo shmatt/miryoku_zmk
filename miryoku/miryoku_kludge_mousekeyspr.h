@@ -3,8 +3,15 @@
 
 #pragma once
 
+// Guarded so they can be set from custom_config.h, which the keymap includes
+// before this file. Upstream defines them unconditionally, which makes a
+// personal speed impossible without editing this shared header.
+#ifndef ZMK_MOUSE_DEFAULT_MOVE_VAL
 #define ZMK_MOUSE_DEFAULT_MOVE_VAL 1250
+#endif
+#ifndef ZMK_MOUSE_DEFAULT_SCRL_VAL
 #define ZMK_MOUSE_DEFAULT_SCRL_VAL 20
+#endif
 
 #define U_MOUSE_MOVE_EXPONENT 1
 #define U_MOUSE_MOVE_TIME 1500

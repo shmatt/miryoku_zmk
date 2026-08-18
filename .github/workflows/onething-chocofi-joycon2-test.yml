@@ -15,7 +15,7 @@ jobs:
       shield: '["corne_left nice_view_adapter nice_view","corne_right nice_view_adapter nice_view"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
-      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\n#define MIRYOKU_KLUDGE_JOYCON2_DEBUG"]'
+      custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define ZMK_MOUSE_DEFAULT_MOVE_VAL 2200\n#define MIRYOKU_KLUDGE_MOUSEKEYSPR\n#define MIRYOKU_KLUDGE_JOYCON2_DEBUG"]'
       # CONFIG_BT_CTLR_DATA_LENGTH_MAX: Zephyr's default is BT_BUF_ACL_RX_SIZE
       # only when that is <251, else 27 -- so setting BUF_ACL_RX_SIZE=254 alone
       # silently left the link layer at 27-byte PDUs (no Data Length Extension).
