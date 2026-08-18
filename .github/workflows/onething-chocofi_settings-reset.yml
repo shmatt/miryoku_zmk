@@ -1,6 +1,12 @@
 # Copyright 2022 Manna Harbour
 # https://github.com/manna-harbour/miryoku
 
+# No display shields here. settings_reset disables Bluetooth, but nice!view's
+# status widget pulls in zmk/ble.h and uses CONFIG_BT_MAX_PAIRED, so the two
+# cannot be built together -- and a firmware whose only job is to clear
+# stored settings has no use for a screen anyway. The keyboard name and TX
+# power went with it for the same reason.
+#
 # miryoku.dtsi now includes behaviors/mouse_keys.dtsi and pointing.h
 # unconditionally, so even a settings-wipe build needs a ZMK tree with
 # pointing support -- hence the same branch and CONFIG_ZMK_POINTING as the
@@ -17,9 +23,9 @@ jobs:
     secrets: inherit
     with:
       board: '["nice_nano/nrf52840/zmk"]'
-      shield: '["corne_left nice_view_adapter nice_view settings_reset","corne_right nice_view_adapter nice_view settings_reset"]'
+      shield: '["corne_left settings_reset","corne_right settings_reset"]'
       alphas: '["qwerty"]'
       nav: '["vi"]'
       custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH"]'
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_ZMK_POINTING=y"]'
+      kconfig: '["CONFIG_ZMK_POINTING=y"]'
       branches: '["shmatt/zmk/feat/gamepad-hid"]'
