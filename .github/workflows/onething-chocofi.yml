@@ -17,6 +17,13 @@
 #   name may contain spaces. Historically a quoted value silently discarded
 #   this entire block, which cost the keyboard name, the TX power and the MTU.
 #
+# The consumer report is forced to BASIC (8-bit usage ids). ZMK's choice has
+# no default, so the first entry wins and every build so far has used FULL --
+# 16-bit ids, which ZMK's own help text warns "has compatibility issues with
+# some host OSes". Media keys on this keyboard have been intermittent since it
+# was built, which fits. Every consumer key miryoku uses is 0x0B5-0x0E9, and
+# the dictation key is 0x0D8, so nothing needs an id above the 0xFF ceiling.
+#
 # The Media layer is overridden to put a dictation key where RGB hue-up would
 # be (right hand, top row, index finger). There is no RGB on this board, so
 # those five keys were dead. Consumer usage 0x0D8 is the standard dictation
@@ -44,6 +51,6 @@ jobs:
       alphas: '["qwerty"]'
       nav: '["vi"]'
       custom_config: '["#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH\n#define ZMK_POINTING_DEFAULT_MOVE_VAL 2200\n#define ZMK_POINTING_DEFAULT_SCRL_VAL 20\n#define MIRYOKU_KLUDGE_JOYCON2\n#define C_DICTATE (ZMK_HID_USAGE(HID_USAGE_CONSUMER, 0xD8))\n#define MIRYOKU_LAYER_MEDIA U_BOOT, &u_to_U_TAP, &u_to_U_EXTRA, &u_to_U_BASE, U_NA, U_RGB_EFF, &kp C_DICTATE, U_RGB_SAI, U_RGB_BRI, U_RGB_TOG, &kp LGUI, &kp LALT, &kp LCTRL, &kp LSHFT, U_NA, &kp C_PREV, &kp C_VOL_DN, &kp C_VOL_UP, &kp C_NEXT, U_EP_TOG, U_NA, &kp RALT, &u_to_U_FUN, &u_to_U_MEDIA, U_NA, &u_bt_sel_0, &u_bt_sel_1, &u_bt_sel_2, &u_bt_sel_3, &u_out_tog, U_NP, U_NP, U_NA, U_NA, U_NA, &kp C_STOP, &kp C_PP, &kp C_MUTE, U_NP, U_NP"]'
-      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_POINTING=y\nCONFIG_ZMK_GAMEPAD=y\nCONFIG_ZMK_JOYCON2_RIGHT_C_CONSUMER_USAGE=0xD8"]'
+      kconfig: '["CONFIG_ZMK_DISPLAY=y\nCONFIG_ZMK_KEYBOARD_NAME=\"OneThing Choc\"\nCONFIG_BT_CTLR_TX_PWR_PLUS_8=y\nCONFIG_BT_L2CAP_TX_MTU=250\nCONFIG_BT_BUF_ACL_RX_SIZE=254\nCONFIG_BT_CTLR_DATA_LENGTH_MAX=251\nCONFIG_BT_USER_DATA_LEN_UPDATE=y\nCONFIG_BT_AUTO_DATA_LEN_UPDATE=y\nCONFIG_ZMK_POINTING=y\nCONFIG_ZMK_GAMEPAD=y\nCONFIG_ZMK_JOYCON2_RIGHT_C_CONSUMER_USAGE=0xD8\nCONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC=y"]'
       branches: '["shmatt/zmk/feat/gamepad-hid"]'
       modules: '["shmatt/zmk-joycon2/main"]'
